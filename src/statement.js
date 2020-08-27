@@ -43,6 +43,10 @@ function printResult(customer, performances_print, totalAmount, volumeCredits) {
     return result;
 }
 
+function printPlayResult(play,amount, perf) {
+    return ` ${play.name}: ${format(amount / 100)} (${perf.audience} seats)\n`;
+}
+
 function statement (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
@@ -54,7 +58,7 @@ function statement (invoice, plays) {
     // add extra credit for every ten comedy attendees
     if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
 
-    performances_print += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+    performances_print += printPlayResult(play, thisAmount, perf);
     totalAmount += thisAmount;
   }
   return printResult(invoice.customer, performances_print, totalAmount, volumeCredits);
