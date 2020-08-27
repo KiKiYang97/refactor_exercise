@@ -250,3 +250,7 @@ test('Amount should be 0 when performances were empty  ', t => {
     }
 });
 
+
+
+
+
