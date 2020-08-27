@@ -73,7 +73,6 @@ function statement (invoice, plays) {
     const play = plays[perf.playID];
     let thisAmount = calculateAmount(play, perf);
     volumeCredits += Math.max(perf.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
     if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
     array.push({'play':play,'amount':thisAmount,'perf':perf})
     totalAmount += thisAmount;
@@ -90,10 +89,8 @@ function statementInHTML (invoice, plays) {
     const play = plays[perf.playID];
     let thisAmount = calculateAmount(play, perf);
     volumeCredits += Math.max(perf.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
     if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
     array.push({'play':play,'amount':thisAmount,'perf':perf})
-//    performances_print += printPlayResultInHTML(play, thisAmount, perf);
     totalAmount += thisAmount;
   }
   return printResultInHTML(invoice.customer, array, totalAmount, volumeCredits);
