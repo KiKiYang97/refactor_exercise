@@ -35,7 +35,12 @@ const format = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
 }).format;
 
-function printResult(customer, performances_print, totalAmount, volumeCredits) {
+function printResult(customer, array, totalAmount, volumeCredits) {
+    let performances_print = '';
+    array.forEach(function(performances) {
+        performances_print +=  ` ${performances.play.name}: ${format(performances.amount / 100)} (${performances.perf.audience} seats)\n`;
+    })
+
     let result = `Statement for ${customer}\n`
     + performances_print
     + `Amount owed is ${format(totalAmount / 100)}\n`
@@ -43,9 +48,6 @@ function printResult(customer, performances_print, totalAmount, volumeCredits) {
     return result;
 }
 
-function printPlayResult(play,amount, perf) {
-    return ` ${play.name}: ${format(amount / 100)} (${perf.audience} seats)\n`;
-}
 
 function printResultInHTML(customer, performances_print, totalAmount, volumeCredits) {
     let result = `<h1>Statement for ${customer}</h1>\n` +
@@ -66,17 +68,17 @@ function statement (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let performances_print = '';
+  let array = [];
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = calculateAmount(play, perf);
     volumeCredits += Math.max(perf.audience - 30, 0);
     // add extra credit for every ten comedy attendees
     if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
-
-    performances_print += printPlayResult(play, thisAmount, perf);
+    array.push({'play':play,'amount':thisAmount,'perf':perf})
     totalAmount += thisAmount;
   }
-  return printResult(invoice.customer, performances_print, totalAmount, volumeCredits);
+  return printResult(invoice.customer, array, totalAmount, volumeCredits);
 }
 
 function statementInHTML (invoice, plays) {
