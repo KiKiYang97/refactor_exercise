@@ -19,12 +19,14 @@ function calculateAmount(play, perf) {
     }
     return thisAmount;
 }
+
+const format = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+}).format;
+
 function printResult(customer, performances_print, totalAmount, volumeCredits) {
-     const format = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-      }).format;
     let result = `Statement for ${customer}\n`
     + performances_print
     + `Amount owed is ${format(totalAmount / 100)}\n`
@@ -36,11 +38,6 @@ function statement (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let performances_print = '';
-  const format = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format;
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = calculateAmount(play, perf);
