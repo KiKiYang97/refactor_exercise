@@ -1,3 +1,11 @@
+function calculateTragedyAmount(perf) {
+    let thisAmount = 40000;
+    if (perf.audience > 30) {
+      thisAmount += 1000 * (perf.audience - 30);
+    }
+    return thisAmount;
+}
+
 function calculateComedyAmount(perf) {
     let thisAmount = 30000;
     if (perf.audience > 20) {
@@ -5,14 +13,12 @@ function calculateComedyAmount(perf) {
     }
     return thisAmount += 300 * perf.audience;
 }
+
 function calculateAmount(play, perf) {
  let thisAmount = 0;
     switch (play.type) {
       case 'tragedy':
-        thisAmount = 40000;
-        if (perf.audience > 30) {
-          thisAmount += 1000 * (perf.audience - 30);
-        }
+        thisAmount = calculateTragedyAmount(perf);
         break;
       case 'comedy':
         thisAmount = calculateComedyAmount(perf);
