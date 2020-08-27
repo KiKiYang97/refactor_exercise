@@ -1,3 +1,10 @@
+function calculateComedyAmount(perf) {
+    let thisAmount = 30000;
+    if (perf.audience > 20) {
+      thisAmount += 10000 + 500 * (perf.audience - 20);
+    }
+    return thisAmount += 300 * perf.audience;
+}
 function calculateAmount(play, perf) {
  let thisAmount = 0;
     switch (play.type) {
@@ -8,11 +15,7 @@ function calculateAmount(play, perf) {
         }
         break;
       case 'comedy':
-        thisAmount = 30000;
-        if (perf.audience > 20) {
-          thisAmount += 10000 + 500 * (perf.audience - 20);
-        }
-        thisAmount += 300 * perf.audience;
+        thisAmount = calculateComedyAmount(perf);
         break;
       default:
         throw new Error(`unknown type: ${play.type}`);
