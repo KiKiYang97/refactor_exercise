@@ -49,7 +49,11 @@ function printResult(customer, array, totalAmount, volumeCredits) {
 }
 
 
-function printResultInHTML(customer, performances_print, totalAmount, volumeCredits) {
+function printResultInHTML(customer, array, totalAmount, volumeCredits) {
+    let performances_print = '';
+        array.forEach(function(performances) {
+            performances_print +=   ` <tr><td>${performances.play.name}</td><td>${performances.perf.audience}</td><td>${format(performances.amount / 100)}</td></tr>\n`;
+    })
     let result = `<h1>Statement for ${customer}</h1>\n` +
                      `<table>\n` +
                      `<tr><th>play</th><th>seats</th><th>cost</th></tr>`
@@ -58,10 +62,6 @@ function printResultInHTML(customer, performances_print, totalAmount, volumeCred
                      +`<p>Amount owed is <em>${format(totalAmount / 100)}</em></p>\n`
                     +`<p>You earned <em>${volumeCredits}</em> credits</p>\n`
     return result;
-}
-
-function printPlayResultInHTML(play,amount, perf) {
-    return  ` <tr><td>${play.name}</td><td>${perf.audience}</td><td>${format(amount / 100)}</td></tr>\n`;
 }
 
 function statement (invoice, plays) {
@@ -85,17 +85,18 @@ function statementInHTML (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let performances_print = '';
+  let array = [];
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = calculateAmount(play, perf);
     volumeCredits += Math.max(perf.audience - 30, 0);
     // add extra credit for every ten comedy attendees
     if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
-
-    performances_print += printPlayResultInHTML(play, thisAmount, perf);
+    array.push({'play':play,'amount':thisAmount,'perf':perf})
+//    performances_print += printPlayResultInHTML(play, thisAmount, perf);
     totalAmount += thisAmount;
   }
-  return printResultInHTML(invoice.customer, performances_print, totalAmount, volumeCredits);
+  return printResultInHTML(invoice.customer, array, totalAmount, volumeCredits);
 }
 
 module.exports = {
