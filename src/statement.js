@@ -19,10 +19,23 @@ function calculateAmount(play, perf) {
     }
     return thisAmount;
 }
+function printResult(customer, performances_print, totalAmount, volumeCredits) {
+     const format = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+      }).format;
+    let result = `Statement for ${customer}\n`
+    + performances_print
+    + `Amount owed is ${format(totalAmount / 100)}\n`
+    + `You earned ${volumeCredits} credits \n`;
+    return result;
+}
+
 function statement (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
-  let result = `Statement for ${invoice.customer}\n`;
+  let performances_print = '';
   const format = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -36,12 +49,10 @@ function statement (invoice, plays) {
     // add extra credit for every ten comedy attendees
     if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
     //print line for this order
-    result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+    performances_print += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
   }
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits \n`;
-  return result;
+  return printResult(invoice.customer, performances_print, totalAmount, volumeCredits);
 }
 
 module.exports = {
