@@ -64,36 +64,33 @@ function printResultInHTML(customer, array, totalAmount, volumeCredits) {
     return result;
 }
 
+function createStatement(invoice,plays) {
+    let totalAmount = 0;
+    let volumeCredits = 0;
+    let array = [];
+    for (let perf of invoice.performances) {
+      const play = plays[perf.playID];
+      let thisAmount = calculateAmount(play, perf);
+      volumeCredits += Math.max(perf.audience - 30, 0);
+      if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+      array.push({'play':play,'amount':thisAmount,'perf':perf})
+      totalAmount += thisAmount;
+    }
+    return {
+    'totalAmount' : totalAmount,
+    'volumeCredits' : volumeCredits,
+    'array' : array
+    }
+}
+
 function statement (invoice, plays) {
-  let totalAmount = 0;
-  let volumeCredits = 0;
-  let performances_print = '';
-  let array = [];
-  for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
-    let thisAmount = calculateAmount(play, perf);
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
-    array.push({'play':play,'amount':thisAmount,'perf':perf})
-    totalAmount += thisAmount;
-  }
-  return printResult(invoice.customer, array, totalAmount, volumeCredits);
+  const data = createStatement(invoice,plays);
+  return printResult(invoice.customer, data.array, data.totalAmount, data.volumeCredits);
 }
 
 function statementInHTML (invoice, plays) {
-  let totalAmount = 0;
-  let volumeCredits = 0;
-  let performances_print = '';
-  let array = [];
-  for (let perf of invoice.performances) {
-    const play = plays[perf.playID];
-    let thisAmount = calculateAmount(play, perf);
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
-    array.push({'play':play,'amount':thisAmount,'perf':perf})
-    totalAmount += thisAmount;
-  }
-  return printResultInHTML(invoice.customer, array, totalAmount, volumeCredits);
+  const data = createStatement(invoice,plays);
+  return printResultInHTML(invoice.customer, data.array, data.totalAmount, data.volumeCredits);
 }
 
 module.exports = {
